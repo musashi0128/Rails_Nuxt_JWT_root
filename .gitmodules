@@ -1,6 +1,6 @@
 [submodule "api"]
  path = api
- url = ./api
+ url = https://github.com/musashi0128/Rails_Nuxt_JWT_api
 [submodule "front"]
  path = front
- url = ./front
+ url = https://github.com/musashi0128/Rails_Nuxt_JWT_front
