@@ -1,0 +1,45 @@
+# versionは明確に定義する
+version: '3.8'
+
+# servicesの直下にはコンテナ名を定義する -> db/api/front
+services:
+  db:
+    image: postgres:13.1-alpine
+    environment:
+      TZ: UTC
+      PGTZ: UTC
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+    # ./api/tmp/db: -> ホスト側のディレクトリ(最後の:が区切り)
+    # /var/lib/postgresql/data -> コンテナ側にコピーするPATH
+    volumes:
+      - "./api/tmp/db:/var/lib/postgresql/data"
+
+  api:
+    # buildはベースとなるDokcerImage
+    build:
+      context: ./api
+      args:
+        WORKDIR: $WORKDIR
+    environment:
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+    volumes:
+      - "./api:/$WORKDIR"
+    # depends_onはサービスの依存関係(起動の順番) -> 1.dbの起動 2.apiの起動となる
+    depends_on:
+      - db
+    ports:
+      - "$API_PORT:3000"
+
+  front:
+    build:
+      context: ./front
+      args:
+        WORKDIR: $WORKDIR
+    command: yarn run dev
+    volumes:
+      - ./front:/$WORKDIR
+    ports:
+      - "$FRONT_PORT:3000"
+    # 1.dbの起動 2.apiの起動 3.frontの起動となる
+    depends_on:
+      - api
