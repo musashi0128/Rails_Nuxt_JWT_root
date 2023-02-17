@@ -23,6 +23,7 @@ services:
     environment:
       POSTGRES_PASSWORD: $POSTGRES_PASSWORD
       API_DOMAIN: "localhost:$FRONT_PORT"
+    command: /bin/sh -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     volumes:
       - "./api:/$WORKDIR"
     # depends_onはサービスの依存関係(起動の順番) -> 1.dbの起動 2.apiの起動となる
