@@ -22,6 +22,7 @@ services:
         WORKDIR: $WORKDIR
     environment:
       POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+      API_DOMAIN: "localhost:$FRONT_PORT"
     volumes:
       - "./api:/$WORKDIR"
     # depends_onはサービスの依存関係(起動の順番) -> 1.dbの起動 2.apiの起動となる
@@ -35,6 +36,7 @@ services:
       context: ./front
       args:
         WORKDIR: $WORKDIR
+        API_URL: "http://localhost:$API_PORT"
     command: yarn run dev
     volumes:
       - ./front:/$WORKDIR
